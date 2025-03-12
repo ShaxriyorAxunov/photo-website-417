@@ -1,5 +1,5 @@
 const pool = require("../config/db");
-const bcrypt = require("bcryptjs");
+const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.getUsers = async (req, res) => {
@@ -24,8 +24,8 @@ exports.signup = async (req, res) => {
       return res.status(400).json({ message: "Username already exists" });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const encryptedPassword = await bcrypt.hash(password, salt);
+    const salt = await bcryptjs.genSalt(10);
+    const encryptedPassword = await bcryptjs.hash(password, salt);
 
     const result = await pool.query(
       `insert into users( firstname, lastname, username, password ) values($1, $2, $3, $4) returning *`,
@@ -54,7 +54,7 @@ exports.login = async (req, res) => {
 
     
     const user = result.rows[0];
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await bcryptjs.compare(password, user.password);
     if (!isValidPassword) {
       return res
       .status(404)
